@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block body %}
+<h2>{{ 'Edit' if editing else 'New' }} {{ t }}</h2>
+<form method="post" novalidate>
+{% for f in E.fields %}{% set locked = editing and f.n in E.pk %}{% set val = v.get(f.n) %}
+<label>{{ f.n }}{{ ' *' if f.req }}<br>
+{% if f.ch %}<select name="{{ f.n }}">{% for o in f.ch %}<option {{ 'selected' if val==o }}>{{ o }}</option>{% endfor %}</select>
+{% else %}<input name="{{ f.n }}" {{ 'disabled' if locked }}
+ type="{{ {'int':'number','dec':'number','date':'date','dt':'datetime-local'}.get(f.k,'text') }}"
+ {% if f.k=='dec' %}step="0.01"{% endif %}
+ value="{{ (((val|string)|replace(' ','T'))[:16] if f.k=='dt' else val) if val is not none else '' }}">{% endif %}</label>
+{% endfor %}<button>Save</button> <a href="{{ url_for('lst',t=t) }}">Cancel</a></form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}
+<h2>{{ t }}</h2>
+<form><input name="q" value="{{ q }}" placeholder="Search"> <button>Search</button>
+{% if not E.ro %}<a href="{{ url_for('new',t=t) }}">+ New</a>{% endif %}</form>
+<table><tr>{% for c in cols(E) %}<th>{{ c }}</th>{% endfor %}<th></th></tr>
+{% for r in rows %}<tr>{% for c in cols(E) %}<td>{{ r[c] if r[c] is not none else '' }}</td>{% endfor %}<td>
+{% if t=='reservation' %}<a href="{{ url_for('reservation_view',rid=r.reservation_id) }}">View</a> {% endif %}
+{% if not E.ro %}<a href="{{ url_for('edit',t=t,key=pkey(E,r)) }}">Edit</a>
+<form method="post" action="{{ url_for('delete',t=t,key=pkey(E,r)) }}" style="display:inline" onsubmit="return confirm('Delete?')"><button>Delete</button></form>{% endif %}
+</td></tr>{% else %}<tr><td colspan="99">No records found.</td></tr>{% endfor %}</table>
+{% endblock %}

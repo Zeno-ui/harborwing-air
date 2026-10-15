@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block body %}
+<h2>Reservation #{{ r.reservation_id }}</h2>
+<p>Passenger: {{ r.passenger }} (#{{ r.main_passenger_id }}) | Agent: {{ r.agent_name or 'Direct booking' }} |
+Status: {{ r.reservation_status_code }} | {{ r.ticket_type_code }}/{{ r.travel_class_code }} | Party: {{ r.party_size }} | Created: {{ r.created_at }}</p>
+<h3>Payments (total {{ total }})</h3>
+<table><tr><th>ID</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr>
+{% for p in pays %}<tr><td>{{ p.payment_id }}</td><td>{{ p.payment_date }}</td><td>{{ p.payment_amount }}</td><td>{{ p.payment_status_code }}</td>
+<td><form method="post" action="{{ url_for('link_remove',rid=r.reservation_id,kind='payment',xid=p.payment_id) }}"><button>Remove link</button></form></td></tr>
+{% else %}<tr><td colspan="5">No payments.</td></tr>{% endfor %}</table>
+<form method="post" action="{{ url_for('link_add',rid=r.reservation_id,kind='payment') }}">Link existing payment ID <input name="id" size="5"> <button>Link</button></form>
+<form method="post" action="{{ url_for('payment_new',rid=r.reservation_id) }}" novalidate>New payment:
+<select name="payment_status_code">{% for o in PAY %}<option>{{ o }}</option>{% endfor %}</select>
+<input type="datetime-local" name="payment_date"> <input name="payment_amount" placeholder="amount" size="8"> <button>Create &amp; link</button></form>
+<h3>Flight legs</h3>
+<table><tr><th>Leg</th><th>Flight</th><th>Route</th><th>Sched. dep.</th><th>Actual dep.</th><th></th></tr>
+{% for l in legs %}<tr><td>{{ l.leg_id }}</td><td>{{ l.flight_number }}</td><td>{{ l.origin_airport }}→{{ l.destination_airport }}</td><td>{{ l.scheduled_departure }}</td><td>{{ l.actual_departure or '' }}</td>
+<td><form method="post" action="{{ url_for('link_remove',rid=r.reservation_id,kind='leg',xid=l.leg_id) }}"><button>Remove link</button></form></td></tr>
+{% else %}<tr><td colspan="6">No legs.</td></tr>{% endfor %}</table>
+<form method="post" action="{{ url_for('link_add',rid=r.reservation_id,kind='leg') }}">Link existing leg ID <input name="id" size="5"> <button>Link</button></form>
+{% endblock %}

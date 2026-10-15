@@ -1,0 +1,6 @@
+<!doctype html><title>HarborWing Admin</title>
+<style>body{font:14px sans-serif;margin:1.5rem}nav a{margin-right:.8rem}table{border-collapse:collapse;margin:.5rem 0}
+td,th{border:1px solid #ccc;padding:3px 7px}label{display:block;margin:.4rem 0}.ok{background:#dfd;padding:6px}.err{background:#fdd;padding:6px}</style>
+<nav>{% for k in ENT %}<a href="{{ url_for('lst',t=k) }}">{{ k }}</a>{% endfor %}</nav><hr>
+{% for cat,m in get_flashed_messages(with_categories=true) %}<p class="{{ cat }}">{{ m }}</p>{% endfor %}
+{% block body %}{% endblock %}
